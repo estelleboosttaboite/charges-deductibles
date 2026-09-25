@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulateur de charges déductibles — Boost Ta Boite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#113937; --sage:#608362; --olive:#ABB194;
+    --grey:#D7D9D2; --brown:#7E6B51; --cream:#F5F0EA;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Cormorant Garamond', serif;
+    background:var(--cream);
+    color:var(--teal);
+    min-height:100vh;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:24px 24px 100px;
+  }
+  .card{
+    width:100%; max-width:560px;
+    background:#fff; border-radius:2px; overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(17,57,55,0.25);
+  }
+  .top{
+    background:var(--teal); color:var(--cream);
+    padding:28px 32px 24px; position:sticky; top:0; z-index:5;
+  }
+  .eyebrow{
+    font-family:'Poppins',sans-serif; font-size:11px;
+    letter-spacing:3px; text-transform:uppercase;
+    color:var(--olive); margin-bottom:6px;
+  }
+  .top h1{ font-family:'Poppins',sans-serif; font-weight:600; font-size:22px; line-height:1.3; }
+  .progress-track{ height:3px; background:rgba(245,240,234,0.2); margin-top:20px; border-radius:3px; overflow:hidden; }
+  .progress-fill{ height:100%; background:var(--olive); width:0%; transition:width .3s ease; }
+  .body{ padding:32px 32px 24px; }
+  .intro-body{ text-align:center; }
+  .intro-body p{ font-size:19px; line-height:1.6; margin-bottom:8px; }
+  .meta-note{ font-family:'Poppins',sans-serif; font-size:11px; color:var(--brown); letter-spacing:0.5px; margin-top:16px; text-align:center; }
+  .cta-btn{
+    font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; letter-spacing:0.5px;
+    background:var(--teal); color:var(--cream); border:none;
+    padding:16px 32px; border-radius:2px; cursor:pointer; width:100%;
+    margin-top:20px; transition:background .2s;
+  }
+  .cta-btn:hover{ background:var(--sage); }
+  .cta-btn.secondary{ background:var(--cream); color:var(--teal); border:1.5px solid var(--teal); }
+  .cta-btn.secondary:hover{ background:var(--grey); }
+
+  .category{ margin-bottom:26px; }
+  .category:last-child{ margin-bottom:8px; }
+  .cat-header{
+    font-family:'Poppins',sans-serif; font-size:12px; font-weight:600;
+    letter-spacing:1.5px; text-transform:uppercase; color:var(--sage);
+    margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--grey);
+  }
+  .check-item{
+    display:flex; align-items:flex-start; gap:12px;
+    padding:10px 0; cursor:pointer;
+  }
+  .check-item input{
+    margin-top:5px; width:18px; height:18px; accent-color:var(--sage); cursor:pointer; flex-shrink:0;
+  }
+  .check-item label{
+    font-size:18px; line-height:1.45; color:var(--teal); cursor:pointer;
+  }
+  .check-item .sub{
+    display:block; font-family:'Poppins',sans-serif; font-size:11.5px; color:var(--brown); margin-top:2px;
+  }
+
+  .sticky-footer{
+    position:sticky; bottom:0; background:#fff;
+    padding:16px 32px 24px; border-top:1px solid var(--grey);
+  }
+  .count-line{
+    font-family:'Poppins',sans-serif; font-size:12.5px; color:var(--brown);
+    text-align:center; margin-bottom:10px;
+  }
+
+  /* Results */
+  .score-badge{ font-family:'Poppins',sans-serif; font-weight:700; font-size:44px; color:var(--teal); text-align:center; }
+  .score-sub{ font-family:'Poppins',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--sage); text-align:center; margin-bottom:8px; }
+  .score-track{ height:8px; background:var(--grey); border-radius:8px; overflow:hidden; margin-bottom:24px; }
+  .score-track .fill{ height:100%; background:var(--sage); transition:width .6s ease; }
+  .result-title{ font-size:23px; line-height:1.35; text-align:center; margin-bottom:16px; color:var(--teal); }
+  .result-text{ font-size:18px; line-height:1.6; color:var(--teal); margin-bottom:14px; }
+  .gap-box{
+    background:var(--cream); border:1px solid var(--grey);
+    padding:16px 18px; border-radius:2px; margin:16px 0;
+  }
+  .gap-box .gap-title{ font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--brown); margin-bottom:8px; }
+  .gap-box ul{ padding-left:18px; }
+  .gap-box li{ font-size:17px; line-height:1.5; color:var(--teal); margin-bottom:4px; }
+  .highlight-box{
+    background:var(--teal); color:var(--cream);
+    padding:20px 22px; border-radius:2px; margin:22px 0;
+    font-family:'Poppins',sans-serif; font-size:13.5px; line-height:1.6;
+  }
+  .highlight-box b{ color:var(--olive); }
+  .signature{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15px; color:var(--brown); text-align:center; margin-top:18px; }
+  .restart{ text-align:center; margin-top:16px; }
+  .restart span{ font-family:'Poppins',sans-serif; font-size:12px; color:var(--brown); cursor:pointer; }
+  .restart span:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="card" id="card"></div>
+
+<script>
+const CATEGORIES = [
+  {
+    name: "Voiture & déplacements",
+    items: [
+      { id:"km", label:"Les kilomètres avec ta voiture perso", sub:"Trajets pro notés (date, motif, distance)" },
+      { id:"transport", label:"Tes frais de déplacement (train, avion, taxi, VTC)" },
+      { id:"peages", label:"Péages et parkings" }
+    ]
+  },
+  {
+    name: "Locaux & travail à la maison",
+    items: [
+      { id:"loyer", label:"Une partie de ton loyer si tu travailles depuis chez toi" },
+      { id:"energie", label:"Électricité, internet, téléphone fixe au prorata pro" }
+    ]
+  },
+  {
+    name: "Repas & déplacements",
+    items: [
+      { id:"repas_client", label:"Tes repas avec un client ou un prospect" },
+      { id:"repas_seule", label:"Tes repas seule en déplacement pro" }
+    ]
+  },
+  {
+    name: "Formation & développement",
+    items: [
+      { id:"formation", label:"Tes formations liées à ton métier" },
+      { id:"coaching", label:"Ton coaching business ou mastermind" }
+    ]
+  },
+  {
+    name: "Outils numériques & abonnements",
+    items: [
+      { id:"ia", label:"Tes abonnements IA (ChatGPT, Claude, Canva...)" },
+      { id:"tel_pro", label:"Ton téléphone professionnel" },
+      { id:"site", label:"Ton site internet et nom de domaine" }
+    ]
+  },
+  {
+    name: "Marketing & communication",
+    items: [
+      { id:"pub", label:"Ta publicité en ligne (Meta, Google, LinkedIn)" },
+      { id:"prestataires", label:"Tes prestataires (photographe, community manager...)" }
+    ]
+  },
+  {
+    name: "Protection & honoraires",
+    items: [
+      { id:"per", label:"Ton épargne retraite (PER)" },
+      { id:"prevoyance", label:"Ta prévoyance / assurance en cas d'arrêt de travail" },
+      { id:"honoraires", label:"Tes honoraires (comptable, avocat, notaire)" }
+    ]
+  }
+];
+
+const TOTAL_ITEMS = CATEGORIES.reduce((a,c)=>a+c.items.length,0);
+let stage = "intro"; // intro | quiz | result
+let checked = {};
+
+function render(){
+  const card = document.getElementById('card');
+  if(stage==="intro"){ renderIntro(card); return; }
+  if(stage==="quiz"){ renderQuiz(card); return; }
+  renderResult(card);
+}
+
+function renderIntro(card){
+  card.innerHTML = `
+    <div class="top">
+      <div class="eyebrow">Boost Ta Boite · Estelle</div>
+      <h1>Simulateur de charges déductibles</h1>
+      <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="body intro-body">
+      <p>Coche ce que tu déduis déjà.<br>On regarde ensemble ce qu'il te reste à activer — et tu repars avec le guide complet des 47 charges.</p>
+      <button class="cta-btn" onclick="startQuiz()">Commencer</button>
+      <div class="meta-note">100% gratuit · 2 minutes · Réponds honnêtement, c'est pour toi</div>
+    </div>
+  `;
+}
+
+function renderQuiz(card){
+  const nChecked = Object.values(checked).filter(Boolean).length;
+  card.innerHTML = `
+    <div class="top">
+      <div class="eyebrow">Boost Ta Boite · Estelle</div>
+      <h1>Qu'est-ce que tu déduis déjà ?</h1>
+      <div class="progress-track"><div class="progress-fill" style="width:${Math.round(nChecked/TOTAL_ITEMS*100)}%"></div></div>
+    </div>
+    <div class="body">
+      ${CATEGORIES.map(cat=>`
+        <div class="category">
+          <div class="cat-header">${cat.name}</div>
+          ${cat.items.map(it=>`
+            <div class="check-item" onclick="toggle('${it.id}')">
+              <input type="checkbox" id="cb-${it.id}" ${checked[it.id]?'checked':''} onclick="event.stopPropagation(); toggle('${it.id}')">
+              <label for="cb-${it.id}">${it.label}${it.sub?`<span class="sub">${it.sub}</span>`:''}</label>
+            </div>
+          `).join('')}
+        </div>
+      `).join('')}
+    </div>
+    <div class="sticky-footer">
+      <div class="count-line">${nChecked} / ${TOTAL_ITEMS} charges cochées</div>
+      <button class="cta-btn" onclick="showResult()">Voir mon résultat</button>
+    </div>
+  `;
+}
+
+function toggle(id){
+  checked[id] = !checked[id];
+  render();
+}
+
+function startQuiz(){ stage="quiz"; checked={}; render(); }
+function showResult(){ stage="result"; render(); }
+function restart(){ stage="intro"; checked={}; render(); }
+
+function renderResult(card){
+  const nChecked = Object.values(checked).filter(Boolean).length;
+  const pct = Math.round(nChecked/TOTAL_ITEMS*100);
+
+  const missingByCategory = CATEGORIES
+    .map(cat=>({ name:cat.name, missing:cat.items.filter(it=>!checked[it.id]) }))
+    .filter(c=>c.missing.length>0);
+
+  let title, texts, band;
+  if(pct <= 35){
+    band="low";
+    title = "Tu passes à côté d'une grosse partie de tes charges déductibles.";
+    texts = [
+      `Sur ${TOTAL_ITEMS} charges courantes, tu n'en déduis que ${nChecked}. Ce n'est pas grave — c'est même très fréquent — mais ça veut dire que tu payes probablement plus d'impôts que nécessaire chaque année.`,
+      "La bonne nouvelle : c'est un des leviers les plus rapides à activer, parce que ça ne demande pas de changer ton activité, juste ta façon de la déclarer."
+    ];
+  } else if(pct <= 75){
+    band="mid";
+    title = "Tu as de bons réflexes. Il reste de la marge à aller chercher.";
+    texts = [
+      `Tu déduis déjà ${nChecked} charges sur ${TOTAL_ITEMS} — c'est plus que la moyenne des dirigeantes que j'accompagne. Il reste ${TOTAL_ITEMS-nChecked} zones où tu laisses probablement de l'argent sur la table.`,
+      "À ce stade, ce n'est plus une question de bases, c'est une question de détails bien choisis."
+    ];
+  } else {
+    band="high";
+    title = "Tu es déjà très bien optimisée sur tes charges.";
+    texts = [
+      `${nChecked} charges sur ${TOTAL_ITEMS} déduites — c'est excellent, sincèrement peu de dirigeantes en sont là.`,
+      "La question n'est plus de trouver des charges à déduire. C'est de vérifier que tout est bien structuré (montants, justificatifs, répartition) pour que ce soit solide en cas de contrôle — et de voir quels autres leviers peuvent faire baisser ta fiscalité."
+    ];
+  }
+
+  const gapListHtml = missingByCategory.length ? `
+    <div class="gap-box">
+      <div class="gap-title">Ce que tu ne déduis pas encore</div>
+      <ul>
+        ${missingByCategory.map(c=>`<li><b>${c.name}</b> — ${c.missing.map(m=>m.label).join(', ')}</li>`).join('')}
+      </ul>
+    </div>
+  ` : '';
+
+  let boxText;
+  if(band==="low"){
+    boxText = "On reprend ta liste ensemble, on identifie les 3-5 charges qui pèsent le plus lourd pour ton activité, et on les met en place dès ce mois-ci.";
+  } else if(band==="mid"){
+    boxText = "On regarde précisément les catégories qu'il te reste à activer, et lesquelles ont le plus d'impact sur TON niveau de charges.";
+  } else {
+    boxText = "On vérifie que tes justificatifs et tes répartitions sont solides, et on regarde s'il reste 1 ou 2 leviers plus stratégiques (statut, rémunération, investissement) pour aller plus loin.";
+  }
+
+  card.innerHTML = `
+    <div class="top">
+      <div class="eyebrow">Boost Ta Boite · Estelle</div>
+      <h1>Ton résultat</h1>
+      <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+    </div>
+    <div class="body">
+      <div class="score-badge">${nChecked} / ${TOTAL_ITEMS}</div>
+      <div class="score-sub">Charges déjà déduites</div>
+      <div class="score-track"><div class="fill" style="width:${pct}%"></div></div>
+
+      <div class="result-title">${title}</div>
+      ${texts.map(p=>`<div class="result-text">${p}</div>`).join('')}
+
+      ${gapListHtml}
+
+      <div class="highlight-box"><b>Ce qu'on ferait ensemble en premier</b><br><br>${boxText}</div>
+
+      <a href="https://www.boosttaboite.fr/guide" target="_blank" style="text-decoration:none;">
+        <button class="cta-btn secondary">📄 Télécharger le guide des 47 charges déductibles</button>
+      </a>
+      <a href="https://www.boosttaboite.fr" target="_blank" style="text-decoration:none;">
+        <button class="cta-btn">Réserver mon Audit Flash offert</button>
+      </a>
+      <div class="meta-note">30 minutes · 100% gratuit · Zéro engagement</div>
+
+      <div class="signature">« Tu n'as pas besoin d'être bonne en compta.<br>T'as besoin de quelqu'un qui l'est pour toi. »</div>
+      <div class="restart"><span onclick="restart()">Refaire le diagnostic</span></div>
+    </div>
+  `;
+}
+
+render();
+</script>
+</body>
+</html>
